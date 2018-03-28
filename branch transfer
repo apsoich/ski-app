@@ -1,0 +1,17 @@
+<?php
+
+$dblink1=mysql_connect('$ip1', '$user1', '$pass1'); // connect server
+mysql_select_db('$database1',$dblink1);  // select database
+
+
+$table='tabletest';
+
+$tableinfo = mysql_fetch_array(mysql_query("SHOW CREATE TABLE $table  ",$dblink1)); // get structure from table on webapp
+mysql_query(" $tableinfo[1] ",$dblink2); // use found structure to make table on server 2
+$result = mysql_query("SELECT * FROM $table  ",$dblink1); // select all content		
+
+while ($row = mysql_fetch_array($result, MYSQL_ASSOC) ) {		
+       mysql_query("INSERT INTO $table (".implode(", ",array_keys($row)).") VALUES ('".implode("', '",array_values($row))."')",$dblink2); // insert one row into new table
+}
+ mysql_close($dblink1); 
+ mysql_close($dblink2);
